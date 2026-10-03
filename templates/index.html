@@ -1,0 +1,46 @@
+<!doctype html>
+<html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Area Prediction</title>
+<style>
+:root{--bg:#f6f7f9;--card:#fff;--tx:#1b1f24;--mut:#667;--ac:#1f6feb;--bd:#d8dce2;--er:#c62828;--wn:#8a5a00}
+@media(prefers-color-scheme:dark){:root{--bg:#14171b;--card:#1d2127;--tx:#e8eaed;--mut:#9aa3ad;--bd:#33393f}}
+body{margin:0;font-family:system-ui,sans-serif;background:var(--bg);color:var(--tx)}
+main{max-width:760px;margin:0 auto;padding:24px 16px}
+.card{background:var(--card);border:1px solid var(--bd);border-radius:12px;padding:20px;margin-bottom:16px}
+h1{margin:0 0 4px}.mut{color:var(--mut);font-size:.9rem}
+#grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(200px,1fr));gap:12px}
+label{display:block;font-size:.85rem;margin-bottom:4px}input,select{width:100%;box-sizing:border-box;padding:8px;border:1px solid var(--bd);border-radius:8px;background:var(--bg);color:var(--tx)}
+button{margin-top:16px;padding:10px 20px;background:var(--ac);color:#fff;border:0;border-radius:8px;font-size:1rem;cursor:pointer}
+.banner{background:#fff3cd;color:#664d03;padding:10px 14px;border-radius:8px;margin-bottom:16px;font-size:.9rem}
+#result .big{font-size:2rem;font-weight:700}.err{color:var(--er)}.warn{color:var(--wn)}
+</style></head><body><main>
+<h1>Area Prediction</h1><p class="mut">Estimate affected/land area from site and weather features.</p>
+<div id="banner"></div>
+<div class="card"><div id="grid">Loading…</div><button id="go" disabled>Predict area</button></div>
+<div class="card" id="result" hidden></div>
+<p class="mut" id="foot"></p>
+</main>
+<script>
+const $=id=>document.getElementById(id);let schema=null;
+fetch('/api/schema').then(r=>r.json().then(j=>({ok:r.ok,j}))).then(({ok,j})=>{
+  if(!ok){$('grid').innerHTML='<span class="err">'+j.error+'</span>';return}
+  schema=j;
+  if(j.demo)$('banner').innerHTML='<div class="banner"><b>Demonstration model.</b> Trained on synthetic data – predictions are not valid for real-world use.</div>';
+  $('grid').innerHTML=j.fields.map(f=>{
+    const n=f.name,req=f.required?' *':'';let inp;
+    if(f.type==='select')inp=`<select id="${n}"><option value="">—</option>${f.options.map(o=>`<option>${o}</option>`).join('')}</select>`;
+    else inp=`<input id="${n}" type="${f.type==='date'?'date':'number'}" step="any" ${f.min!=null?`min="${f.min}"`:''} ${f.max!=null?`max="${f.max}"`:''}>`;
+    return `<div><label for="${n}">${n.replace(/_/g,' ')}${req}</label>${inp}</div>`}).join('');
+  $('go').disabled=false;
+  $('foot').textContent=`Model: ${j.model}. Held-out test MAE ${j.test_metrics.MAE.toFixed(1)}, RMSE ${j.test_metrics.RMSE.toFixed(1)}, R² ${j.test_metrics.R2.toFixed(2)} (baseline R² ${j.baseline_metrics.R2.toFixed(2)}). Units: ${j.units}. Predictions are estimates.`;
+});
+$('go').onclick=async()=>{
+  const rec={};schema.fields.forEach(f=>{rec[f.name]=$(f.name).value});
+  const r=await fetch('/api/predict',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify(rec)});
+  const j=await r.json(),el=$('result');el.hidden=false;
+  if(!r.ok){el.innerHTML='<span class="err">'+j.error+'</span>';return}
+  el.innerHTML=`<div class="mut">Predicted area</div><div class="big">${j.predicted_area.toLocaleString()} ${j.unit_symbol}</div>
+  <div>Approx. 80% range: ${j.approx_80pct_range[0].toLocaleString()} – ${j.approx_80pct_range[1].toLocaleString()} ${j.unit_symbol}</div>
+  ${j.warnings.map(w=>`<div class="warn">⚠ ${w}</div>`).join('')}<p class="mut">${j.note}</p>`;
+};
+</script></body></html>

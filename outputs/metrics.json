@@ -1,0 +1,80 @@
+{
+  "is_demo_data": true,
+  "units": "hectares",
+  "selected_model": "hist_gradient_boosting",
+  "validation": {
+    "ridge": {
+      "params": {
+        "alpha": 0.1
+      },
+      "metrics": {
+        "MAE": 12.351939273014738,
+        "RMSE": 20.547012913429484,
+        "R2": 0.5914449724824424,
+        "median_abs_error": 6.609047604621951
+      }
+    },
+    "random_forest": {
+      "params": {
+        "max_depth": null,
+        "min_samples_leaf": 2,
+        "n_estimators": 200
+      },
+      "metrics": {
+        "MAE": 12.202587331682677,
+        "RMSE": 19.93745306719104,
+        "R2": 0.6153262709915037,
+        "median_abs_error": 6.751801965589749
+      }
+    },
+    "hist_gradient_boosting": {
+      "params": {
+        "learning_rate": 0.1,
+        "max_iter": 200,
+        "max_leaf_nodes": 15
+      },
+      "metrics": {
+        "MAE": 10.727126049350998,
+        "RMSE": 18.020932664565873,
+        "R2": 0.6857265455874503,
+        "median_abs_error": 5.560493429643699
+      }
+    }
+  },
+  "test_baseline": {
+    "MAE": 23.620356347438754,
+    "RMSE": 39.55412883372733,
+    "R2": -0.11507070647066131,
+    "median_abs_error": 13.990000000000002
+  },
+  "test_final": {
+    "MAE": 12.720841841863006,
+    "RMSE": 21.908662442082615,
+    "R2": 0.6579020377138687,
+    "median_abs_error": 6.552335550583521
+  },
+  "test_residuals": {
+    "mean_residual (bias)": 2.768516739147497,
+    "std_residual": 21.733034879330166,
+    "p05": -24.563044683518555,
+    "p95": 40.656141239820414
+  },
+  "split_sizes": {
+    "train": 2093,
+    "val": 448,
+    "test": 449
+  },
+  "cleaning": {
+    "rows_loaded": 3030,
+    "duplicates_removed": 30,
+    "invalid_target_or_date_removed": 5,
+    "invalid_coordinates_removed": 5,
+    "impossible_values_set_missing": 0,
+    "rows_after_cleaning": 2990,
+    "missing_per_feature": {
+      "elevation_m": 60,
+      "rainfall_mm": 61,
+      "temperature_c": 60
+    }
+  }
+}
