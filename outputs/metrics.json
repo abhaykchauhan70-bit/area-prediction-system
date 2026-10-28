@@ -21,10 +21,10 @@
         "n_estimators": 200
       },
       "metrics": {
-        "MAE": 12.202587331682677,
+        "MAE": 12.202587331682679,
         "RMSE": 19.93745306719104,
         "R2": 0.6153262709915037,
-        "median_abs_error": 6.751801965589749
+        "median_abs_error": 6.751801965589721
       }
     },
     "hist_gradient_boosting": {

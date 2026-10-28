@@ -1,2 +1,14 @@
-{"latitude": 22.5, "longitude": 80.1, "event_date": "2025-05-15", "region": "Central", "land_cover": "forest",
- "elevation_m": 450, "rainfall_mm": 120, "temperature_c": 31, "population_density": 60, "prior_area_ha": 25}
+{
+  "event_id": 133,
+  "event_date": "2022-10-10",
+  "latitude": 30.388970812484217,
+  "longitude": 81.2088149748104,
+  "elevation_m": 105.65782117566832,
+  "rainfall_mm": 109.59270852990896,
+  "temperature_c": 29.780994243419176,
+  "population_density": 27.846149994455985,
+  "prior_area_ha": 13.050086895670688,
+  "region": "North",
+  "land_cover": "forest",
+  "burned_fraction_post": 0.5565
+}
